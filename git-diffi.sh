@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-git config --global alias.diffi '!git diff'
+
+# git config --global alias.diffi '!git diff'
 _git_root=$(git rev-parse --show-toplevel)
 
 test -f "$_git_root/.diffignore" || \
     cp "./$_git_root/.diffignore.base" "./$_git_root/.diffignore" >& /dev/null || \
-    >&2 echo "diffignore: no .diffignore or .diffignore.base found in root git directory!"|| exit 1
+    >&2 echo "git-diffi: no .diffignore or .diffignore.base found in root git directory!"|| exit 1
 
 PATHS=()
 VALID_ARGS=()
@@ -22,14 +23,10 @@ while (( "$#" )); do
 shift
 done
 
-
-
-
 # https://git-scm.com/docs/gitignore#_pattern_format
 DIFFI=()
 
-
-
+# read from .diffibnore file
 while read -r ignore;do
     if [ -n "$ignore" ] && [[ "${ignore}" != \!* ]] && [[ "$ignore" != \#* ]] ;
     then
@@ -39,8 +36,6 @@ done < "$_git_root/.diffignore"
 
 
 
-set -x 
-# git diff "$@" -- $(scripts/diffignore.sh)
 [[ -n "$PATHS" ]] && REAL_PATHS=$(realpath --relative-to=$_git_root ${PATHS[@]})
 # execute git diff from repo root so that diffignore is applied properly
 # keeping provided direct paths

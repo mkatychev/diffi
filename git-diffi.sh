@@ -10,12 +10,11 @@ test -f "$_git_root/.diffignore" || \
 PATHS=""
 VALID_ARGS=""
 
-# separator="--"
 while (( "$#" )); do
-    # swallow double dash
+    # swallow double dash since we will append it anyways
     if [[ "$1" == "--" ]]; then
         continue
-    # determine valid glob patterns
+    # determine valid glob patterns also checks existence of strict path
     elif [[ $(compgen -G "$1") ]]; then
         PATHS+=" $1"
     else

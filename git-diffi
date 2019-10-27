@@ -88,6 +88,5 @@ done < "$_git_root/.diffignore"
 [[ -n "$PATHS" ]] && REAL_PATHS=$(realpath --relative-to=$_git_root ${PATHS[@]})
 # execute git diff from repo root so that diffignore is applied properly
 # keeping provided direct paths
-DIFF_ARGS=$(echo "${VALID_ARGS[@]} --  ${REAL_PATHS:-} ${DIFFI[@]}")
 (cd "$_git_root" || exit 1; \
-    git diff "$DIFF_ARGS")
+    git diff $(echo "${VALID_ARGS[@]} --  ${REAL_PATHS:-} ${DIFFI[@]}"))

@@ -3,9 +3,55 @@
 # git config --global alias.diffi '!git diff'
 _git_root=$(git rev-parse --show-toplevel)
 
-test -f "$_git_root/.diffignore" || \
-    cp "./$_git_root/.diffignore.base" "./$_git_root/.diffignore" >& /dev/null || \
-    >&2 echo "git-diffi: no .diffignore or .diffignore.base found in root git directory!"|| exit 1
+DIFFIGNORE_GLOBAL=${DIFFIGNORE_GLOBAL:-~/.diffignore.global}
+
+# Only use colors if connected to a terminal
+if [ -t 1 ]; then
+    RED=$(printf '\033[31m')
+    RESET=$(printf '\033[m')
+else
+    RED=""
+    RESET=""
+fi
+
+error() {
+	echo ${RED}"Error: $@"${RESET} >&2
+}
+
+diffi_base_init() {
+    test -e "$DIFFIGNORE_GLOBAL" || {
+        error "$DIFFIGNORE_GLOBAL does not exist" 
+        exit 1
+    }
+
+    test ! -e "$_git_root/.diffignore.base" || {
+        error ".diffignore.base already exists in project root!" 
+        exit 1
+    }
+
+    cp "$DIFFIGNORE_GLOBAL" "$_git_root/.diffignore.base" || {
+        error "failed to create .diffignore.base"
+        exit 1
+    }
+}
+
+diffi_init(){
+    test -f "$_git_root/.diffignore" || {
+        cp "./$_git_root/.diffignore.base" "$_git_root/.diffignore" >& /dev/null || \
+        error "no .diffignore or .diffignore.base found in root git directory!"
+        echo "  run $ git diffi --init" && \
+        exit 1
+    }
+}
+
+if [[ "$1" == "--init" ]]; then
+    diffi_base_init || exit 1
+    echo ".diffignore.base created in project root"
+    exit 0
+fi
+
+diffi_init
+
 
 PATHS=()
 VALID_ARGS=()
@@ -27,7 +73,7 @@ done
 DIFFI=()
 
 # read from .diffibnore file
-while read -r ignore;do
+while read -r ignore; do
     if [ -n "$ignore" ] && [[ "${ignore}" != \!* ]] && [[ "$ignore" != \#* ]] ;
     then
         DIFFI+=(":!${ignore}")
@@ -39,5 +85,6 @@ done < "$_git_root/.diffignore"
 [[ -n "$PATHS" ]] && REAL_PATHS=$(realpath --relative-to=$_git_root ${PATHS[@]})
 # execute git diff from repo root so that diffignore is applied properly
 # keeping provided direct paths
-(cd $_git_root; \
-    git diff $(echo "${VALID_ARGS[@]} --  ${REAL_PATHS:-} ${DIFFI[@]}"))
+DIFF_ARGS=$(echo "${VALID_ARGS[@]} --  ${REAL_PATHS:-} ${DIFFI[@]}")
+(cd "$_git_root" || exit 1; \
+    git diff "$DIFF_ARGS")

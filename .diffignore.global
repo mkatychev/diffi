@@ -1,0 +1,12 @@
+# COMMON diffingore files
+#
+# golang vendored files
+vendor/
+# protoc generated files
+*.pb*.go
+*_pb2.py
+*_pb2.pyi
+*_pb2_grpc*.py
+*_pb.js
+# encrypted sops files
+*.enc.yaml

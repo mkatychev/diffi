@@ -64,8 +64,8 @@ EOF
 }
 
 
-cp_global_diffi() {
-    printf "${YELLOW}Do you want to create a $DIFFIGNORE_GLOBAL?[Y/n]${RESET} "
+cp_global() {
+    printf "${YELLOW}Do you want to create a ${RESET}$DIFFIGNORE_GLOBAL${YELLOW}? [Y/n]${RESET} "
     read opt
     case $opt in
         y*|Y*|"") echo "Creating global diffignore"; global_diffi_doc ;;
@@ -79,8 +79,9 @@ cp_global_diffi() {
 
 
 ln_or_cp() {
-    printf "${YELLOW}Do you want to Sym[L]ink or [c]opy git-diffi to /usr/local/bin "
-    printf "or [S]kip this step [L/c/S]${RESET} "
+    printf "${YELLOW}Do you want to sym[${RESET}L${YELLOW}]ink, "
+    printf "[${RESET}C${YELLOW}]opy git-diffi to /usr/local/bin "
+    printf "or [${RESET}S${YELLOW}]kip this step ${RESET} "
     read opt
     case $opt in
         l*|L*|"") ln -s "$PWD/git-diffi" "/usr/local/bin/git-diffi"
@@ -95,4 +96,4 @@ ln_or_cp() {
 check_git
 ln_or_cp
 alias_diffi
-cp_global_diffi
+cp_global

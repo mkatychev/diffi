@@ -9,9 +9,11 @@ DIFFIGNORE_GLOBAL=${DIFFIGNORE_GLOBAL:-~/.diffignore.global}
 if [ -t 1 ]; then
     RED=$(printf '\033[31m')
     RESET=$(printf '\033[m')
+    YELLOW=$(printf '\033[33m')
 else
     RED=""
     RESET=""
+    YELLOW=""
 fi
 
 error() {
@@ -36,8 +38,8 @@ diffi_base_init() {
 }
 
 diffi_init(){
-    test -f "$_git_root/.diffignore" || {
-        cp "./$_git_root/.diffignore.base" "$_git_root/.diffignore" >& /dev/null || \
+    test -e "$_git_root/.diffignore" || {
+        cp "$_git_root/.diffignore.base" "$_git_root/.diffignore" >& /dev/null || \
         error "no .diffignore or .diffignore.base found in root git directory!"
         echo "  run $ git diffi --init" && \
         exit 1
@@ -47,6 +49,7 @@ diffi_init(){
 if [[ "$1" == "--init" ]]; then
     diffi_base_init || exit 1
     echo ".diffignore.base created in project root"
+    echo "${YELLOW}Please add ${RESET}.diffignore${YELLOW} to the project ${RESET}.gitignore${YELLOW} if you have not done so"
     exit 0
 fi
 

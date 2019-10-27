@@ -75,7 +75,7 @@ done
 # https://git-scm.com/docs/gitignore#_pattern_format
 DIFFI=()
 
-# read from .diffibnore file
+# read from .diffignore file
 while read -r ignore; do
     if [ -n "$ignore" ] && [[ "${ignore}" != \!* ]] && [[ "$ignore" != \#* ]] ;
     then

@@ -1,6 +1,13 @@
-# git-diffi
+# diffi
+
+diffi is an attempt to provide glob pattern matching using a `.diffignore` file in an attempt
+to reduce the amount of 'noisy' commited files one sees during a git diff.
 
 ## USAGE:
+
+* `./setup.sh` configures diffi installation and aliasing.
+
+* `git diffi` can be used in any situation a `git diff` can be used.
 
 * You can create a .diffignore.base in any git project by calling:
 

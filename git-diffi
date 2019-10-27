@@ -3,7 +3,7 @@
 # git config --global alias.diffi '!git diff'
 _git_root=$(git rev-parse --show-toplevel)
 
-DIFFIGNORE_GLOBAL=${DIFFIGNORE_GLOBAL:-~/.diffignore.global}
+DIFFI_GLOBAL=${DIFFI_GLOBAL:-~/.diffignore.global}
 
 # Only use colors if connected to a terminal
 if [ -t 1 ]; then
@@ -21,15 +21,15 @@ error() {
 }
 
 arg_init() {
-    DIFFI_SOURCE="$DIFFIGNORE_GLOBAL"
+    DIFFI_SOURCE="$DIFFI_GLOBAL"
     DIFFI_DEST="$_git_root/.diffignore" 
 
     if [[ "$1" == "--base" ]]; then
         DIFFI_DEST="$_git_root/.diffignore.base" 
     fi
 
-    test -e "$DIFFIGNORE_GLOBAL" || {
-        error "$DIFFIGNORE_GLOBAL does not exist" 
+    test -e "$DIFFI_GLOBAL" || {
+        error "$DIFFI_GLOBAL does not exist" 
         exit 1
     }
 

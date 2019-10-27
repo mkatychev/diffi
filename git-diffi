@@ -20,39 +20,49 @@ error() {
 	echo ${RED}"Error: $@"${RESET} >&2
 }
 
-diffi_base_init() {
+arg_init() {
+    DIFFI_SOURCE="$DIFFIGNORE_GLOBAL"
+    DIFFI_DEST="$_git_root/.diffignore" 
+
+    if [[ "$1" == "--base" ]]; then
+        DIFFI_DEST="$_git_root/.diffignore.base" 
+    fi
+
     test -e "$DIFFIGNORE_GLOBAL" || {
         error "$DIFFIGNORE_GLOBAL does not exist" 
         exit 1
     }
 
-    test ! -e "$_git_root/.diffignore.base" || {
-        error ".diffignore.base already exists in project root!" 
+    test ! -e "$DIFFI_DEST" || {
+        error "$DIFFI_DEST already exists!" 
         exit 1
     }
 
-    cp "$DIFFIGNORE_GLOBAL" "$_git_root/.diffignore.base" || {
+    cp "$DIFFI_SOURCE" "$DIFFI_DEST" || {
         error "failed to create .diffignore.base"
         exit 1
     }
+
+    echo "${DIFFI_DEST##*/} created in project root"
+    echo 
+    echo "${YELLOW}Please add ${RESET}.diffignore${YELLOW} to the project ${RESET}.gitignore${YELLOW} if you have not done so"
 }
 
 diffi_init(){
     test -e "$_git_root/.diffignore" || {
         cp "$_git_root/.diffignore.base" "$_git_root/.diffignore" >& /dev/null || \
         error "no .diffignore or .diffignore.base found in root git directory!"
-        echo "  run $ git diffi --init" && \
+        echo "    $ git diffi (--init | --init-base)"
         exit 1
     }
 }
 
-if [[ "$1" == "--init" ]]; then
-    diffi_base_init || exit 1
-    echo ".diffignore.base created in project root"
-    echo "${YELLOW}Please add ${RESET}.diffignore${YELLOW} to the project ${RESET}.gitignore${YELLOW} if you have not done so"
-    exit 0
-fi
+case "$1" in
+    "--init") arg_init; exit 0 ;;
+    "--init-base") arg_init --base; exit 0 ;;
+esac
 
+# standard init fallthrough
 diffi_init
 
 

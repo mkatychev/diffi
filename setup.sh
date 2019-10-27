@@ -2,7 +2,7 @@
 
 set -e
 
-DIFFIGNORE_GLOBAL=${DIFFIGNORE_GLOBAL:-~/.diffignore.global}
+DIFFI_GLOBAL=${DIFFI_GLOBAL:-~/.diffignore.global}
 # Only use colors if connected to a terminal
 if [ -t 1 ]; then
     GREEN=$(printf '\033[32m')
@@ -32,8 +32,10 @@ check_git() {
     }
 }
 
+Y_n="${YELLOW}[${RESET}Y${YELLOW}/${RESET}n${YELLOW}]"
+
 alias_diffi() {
-    printf "${YELLOW}Do you want git-diffi to use git diff autocompletion? [Y/n]${RESET} "
+    printf "${YELLOW}Do you want git-diffi to use git diff autocompletion? $Y_n${RESET} "
     read opt
     case $opt in
         y*|Y*|"") echo "Adding autocompletion to git-diffi" ;;
@@ -55,26 +57,35 @@ EOF
 global_diffi_doc() {
     cat << EOF
 
-You can create a .diffignore.base in any git project by calling:
+You can create a .diffignore/.diffignore.base in any git project by calling:
     $ git diffi --init
-This will create a .diffignore.base in the root git directory using the 
-file provided by the ${YELLOW}\$DIFFIGNORE_GLOBAL${RESET} path (~/.diffignore.global by default)
+    $ git diffi --init-base
+respectively.
+
+This will copy to the contents of the filepath set by the 
+${YELLOW}\$DIFFI_GLOBAL${RESET} variable (~/.diffignore.global by default)
 
 EOF
 }
 
 
 cp_global() {
-    printf "${YELLOW}Do you want to create a ${RESET}$DIFFIGNORE_GLOBAL${YELLOW}? [Y/n]${RESET} "
+    printf "${YELLOW}Do you want to create a ${GREEN}.diffignore.global${YELLOW}? $Y_n${RESET} "
     read opt
     case $opt in
-        y*|Y*|"") echo "Creating global diffignore"; global_diffi_doc ;;
+        y*|Y*|"") echo "Creating global diffignore" ;;
         n*|N*) echo "Global diffignore skipped.";  global_diffi_doc; return ;;
         *) echo "Invalid choice. Aliasing aborted."; return ;;
     esac
-    cp "$PWD/.diffignore.global" "$DIFFIGNORE_GLOBAL"
-    echo "${GREEN}$DIFFIGNORE_GLOBAL:${RESET}"
-    cat "$DIFFIGNORE_GLOBAL"
+    cp -n "$PWD/.diffignore.global" "$DIFFI_GLOBAL" || {
+        error "$DIFFI_GLOBAL already exists!" 
+        exit 1
+    }
+
+    global_diffi_doc 
+
+    echo "${GREEN}$DIFFI_GLOBAL:${RESET}"
+    cat "$DIFFI_GLOBAL"
 }
 
 

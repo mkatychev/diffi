@@ -69,7 +69,7 @@ EOF
 
 
 cp_global() {
-    printf "${YELLOW}Do you want to create a ${GREEN}.diffignore.global${YELLOW}? $Y_n "
+    printf "${YELLOW}Create a ${GREEN}.diffignore.global${YELLOW}? $Y_n "
     read opt
     case $opt in
         y*|Y*|"") echo "Creating global diffignore" ;;
@@ -89,16 +89,23 @@ cp_global() {
 
 
 ln_or_cp() {
-    printf "${YELLOW}Do you want to sym[${RESET}L${YELLOW}]ink, "
-    printf "[${RESET}C${YELLOW}]opy git-diffi to /usr/local/bin "
+    printf "${YELLOW}Sym[${RESET}L${YELLOW}]ink, [${RESET}C${YELLOW}]opy git-diffi to /usr/local/bin, "
     printf "or [${RESET}S${YELLOW}]kip this step ${RESET} "
     read opt
     case $opt in
-        l*|L*|"") ln -s "$PWD/git-diffi" "/usr/local/bin/git-diffi"
-    echo "symlinked ${GREEN}$PWD/git-diffi${RESET} -> ${GREEN}/usr/local/bin/${RESET}" ;;
-        c*|C*) cp "$PWD/git-diffi" "/usr/local/bin/git-diffi"
-    echo "copied ${GREEN}$PWD/git-diffi${RESET} -> ${GREEN}/usr/local/bin/${RESET}" ;;
-        s*|S*) echo "git-diffi install skipped."; return ;;
+        l*|L*|"") ln -s "$PWD/git-diffi" "/usr/local/bin/git-diffi" || {
+            error "/usr/local/bin/git-diffi already exists!" 
+            exit 1
+        }
+        echo "symlinked ${GREEN}$PWD/git-diffi${RESET} -> ${GREEN}/usr/local/bin/${RESET}" ;;
+
+        c*|C*) cp -n "$PWD/git-diffi" "/usr/local/bin/git-diffi" || {
+            error "/usr/local/bin/git-diffi already exists!" 
+            exit 1
+        }
+        echo "copied ${GREEN}$PWD/git-diffi${RESET} -> ${GREEN}/usr/local/bin/${RESET}" ;;
+
+        s*|S*) echo "git-diffi install skipped"; return ;;
         *) echo "Invalid choice. Setup aborted"; exit 1 ;;
     esac
 }

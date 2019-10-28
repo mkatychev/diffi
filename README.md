@@ -27,6 +27,6 @@ reduce the amount of 'noisy' commited files one views during a `git diff`.
 ### Patterns:
 
 * `.diffignore.base` is intended to be committed to a project repo
-* `.diffignore` is the file actually used by calling `git diffi` and should be added to the project `.gitignore`
+* `.diffignore` is the file actually parsed by diffi and should be added to the project `.gitignore`
 * If a `.diffignore` is missing from the project root when calling `git diffi`, diffi will attempt to create one using the `.diffignore.base` present in the project root
 

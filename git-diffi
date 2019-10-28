@@ -5,7 +5,7 @@ _git_root=$(git rev-parse --show-toplevel)
 
 DIFFI_GLOBAL=${DIFFI_GLOBAL:-~/.diffignore.global}
 
-# Only use colors if connected to a terminal
+# Only use colours if connected to a terminal
 if [ -t 1 ]; then
     RED=$(printf '\033[31m')
     RESET=$(printf '\033[m')
@@ -45,7 +45,7 @@ arg_init() {
 
     echo "${DIFFI_DEST##*/} created in project root"
     echo 
-    echo "${YELLOW}Please add ${RESET}.diffignore${YELLOW} to the project ${RESET}.gitignore${YELLOW} if you have not done so"
+    echo "${YELLOW}Please add ${RESET}.diffignore${YELLOW} to the project ${RESET}.gitignore${YELLOW} if you have not done so."
 }
 
 diffi_init(){

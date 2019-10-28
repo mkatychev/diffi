@@ -32,13 +32,13 @@ check_git() {
     }
 }
 
-Y_n="${YELLOW}[${RESET}Y${YELLOW}/${RESET}n${YELLOW}]"
+Y_n="${YELLOW}[${RESET}Y${YELLOW}/${RESET}n${YELLOW}]${RESET}"
 
 alias_diffi() {
-    printf "${YELLOW}Do you want git-diffi to use git diff autocompletion? $Y_n${RESET} "
+    printf "${YELLOW}Do you want git-diffi to use git diff autocompletion? $Y_n "
     read opt
     case $opt in
-        y*|Y*|"") echo "Adding autocompletion to git-diffi" ;;
+        y*|Y*|"") echo "Adding autocompletion to git-diffi." ;;
         n*|N*) echo "Aliasing skipped."; completion_doc; return ;;
         *) echo "Invalid choice. Aliasing aborted."; return ;;
     esac
@@ -62,15 +62,14 @@ You can create a .diffignore/.diffignore.base in any git project by calling:
     $ git diffi --init-base
 respectively.
 
-This will copy to the contents of the filepath set by the 
-${YELLOW}\$DIFFI_GLOBAL${RESET} variable (~/.diffignore.global by default)
+This will copy to the contents of the filepath set by the ${YELLOW}\$DIFFI_GLOBAL${RESET} variable (~/.diffignore.global by default).
 
 EOF
 }
 
 
 cp_global() {
-    printf "${YELLOW}Do you want to create a ${GREEN}.diffignore.global${YELLOW}? $Y_n${RESET} "
+    printf "${YELLOW}Do you want to create a ${GREEN}.diffignore.global${YELLOW}? $Y_n "
     read opt
     case $opt in
         y*|Y*|"") echo "Creating global diffignore" ;;
